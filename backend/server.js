@@ -1,15 +1,22 @@
 const express = require('express');
-const bodyParser = require('body-parser')
-const path = require('path');
+const {addOrUpdateZone, getZoneById} = require('./dynamo')
+
 const app = express();
-app.use(express.static(path.join(__dirname, 'build')));
+const port = process.env.PORT || 3000;
 
-app.get('/ping', function (req, res) {
- return res.send('pong');
+app.get('/', (req,res) => {
+  res.send('Hello World');
 });
 
-app.get('/', function (req, res) {
-  res.sendFile(path.join(__dirname, 'build', 'index.html'));
+app.get('/zone/:id', async(req, res)=> {
+  const id = req.params.id;
+  try{
+    const zone = await getZoneById(id);
+    res.json(zone);
+  }catch (error) {
+    console.error(error);
+    res.status(500).json({err:'fetch zone error'})
+  }
 });
 
-app.listen(process.env.PORT || 8080);
+app.listen(port, ()=>{console.log('listening on port ' + port)} );
