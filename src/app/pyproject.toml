@@ -1,0 +1,25 @@
+[tool.poetry]
+name = "wa-viz"
+version = "0.1.0"
+description = ""
+authors = ["yan_ji <yan.ji@metrocount.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.9"
+black = "^21.11b1"
+fastapi = "^0.70.0"
+uvicorn = {extras = ["standard"], version = "^0.15.0"}
+pandas = "^1.3.4"
+SQLAlchemy = "^1.4.27"
+progressbar2 = "^3.55.0"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
+
+[build-system]
+requires = ["poetry-core>=1.0.0"]
+build-backend = "poetry.core.masonry.api"
+
+[tool.poetry.scripts]
+dev = "uvicorn main:app --reload"
+prod = "uvicorn main:app"

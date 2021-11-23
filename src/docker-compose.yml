@@ -1,0 +1,73 @@
+version: '3.7'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: ./deploy/app/Dockerfile
+    command:
+      [
+        "/wait-for-it/wait-for-it.sh",
+        "waviz-db.local:5432",
+        "--",
+        "sh",
+        "/app/fastapi-start.sh",
+      ]
+    volumes:
+      - ./app/:/app
+    ports:
+      - 8000:8000
+    env_file:
+      - ./deploy/app/.env
+    depends_on:
+      - db
+    networks:
+      waviz:
+        aliases:
+          - waviz-fastapi.local
+    container_name: fastapi
+
+  db:
+    image: postgres:14-alpine
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=waviz
+    ports:
+      - 5432:5432
+    networks:
+      waviz:
+        aliases:
+          - waviz-db.local
+    container_name: db
+
+  # frontend:
+  #   restart: always
+  #   build:
+  #     context: .
+  #     dockerfile: ./dev/frontend/Dockerfile
+  #   command:
+  #     [
+  #       "/wait-for-it/wait-for-it.sh",
+  #       "wahealth-django.local:8000",
+  #       "--",
+  #       "sh",
+  #       "/home/sh/frontend.sh",
+  #     ]
+  #   volumes:
+  #     - ./frontend:/app
+  #   ports:
+  #     - "3000:3000"
+  #   depends_on:
+  #     - graphql-engine
+  #   networks:
+  #     waviz:
+  #       aliases:
+  #         - waviz-frontend.local
+  #   container_name: frontend
+
+volumes:
+  postgres_data:
+
+networks:
+  waviz:
