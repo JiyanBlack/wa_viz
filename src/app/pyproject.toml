@@ -19,7 +19,3 @@ pytest = "^5.2"
 [build-system]
 requires = ["poetry-core>=1.0.0"]
 build-backend = "poetry.core.masonry.api"
-
-[tool.poetry.scripts]
-dev = "uvicorn main:app --reload"
-prod = "uvicorn main:app"
